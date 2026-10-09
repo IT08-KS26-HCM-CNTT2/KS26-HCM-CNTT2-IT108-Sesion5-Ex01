@@ -1,0 +1,20 @@
+	
+BÀI 1: TỐI ƯU HÓA QUY TRÌNH KHỞI TẠO HẠ TẦNG SMART-FARM QUẢ POWERSHELL
+PHẦN 1: PHÂN TÍCH LỖI SAI VÀ NGUYÊN NHÂN
+1. Lỗi 1: Thao tác với tên thư mục chứa khoảng trắng (Lỗi ở lệnh 1 và 2)
+   - Lệnh 1 (mkdir Smart Farm Project): 
+     + Hiện tượng: PowerShell hiểu nhầm Nam muốn tạo 3 thư mục riêng biệt là "Smart", "Farm" và "Project" thay vì 1 thư mục duy nhất.
+     + Nguyên nhân: Trong PowerShell, khoảng trắng được dùng để phân tách các tham số/đối số.
+   - Lệnh 2 (cd Smart Farm Project):
+     + Hiện tượng: Báo lỗi không tìm thấy đường dẫn hoặc sai cú pháp tham số.
+     + Nguyên nhân: PowerShell coi "Farm" và "Project" là các đối số thừa không hợp lệ. Muốn PowerShell hiểu đây là chuỗi liền mạch, cần bao quanh tên thư mục bằng dấu ngoặc đơn ('...') hoặc ngoặc kép ("...").
+2. Lỗi 2: Không di chuyển được vào thư mục gốc trước khi tạo thư mục con (Lỗi ở lệnh 3)
+   - Lệnh 3 (mkdir src/sensors/temperature):
+     + Hiện tượng: Báo lỗi "Cannot find path..." hoặc tạo sai vị trí.
+     + Nguyên nhân: Do lệnh 'cd' ở bước 2 bị thất bại nên PowerShell vẫn đang đứng ở thư mục ngoài (thư mục hiện hành), chưa di chuyển vào trong "Smart Farm Project". Khi thực hiện lệnh tạo đường dẫn tương đối, hệ thống không tìm thấy thư mục cha để đặt cấu trúc con vào.
+PHẦN 2: CHUỖI LỆNH POWERSHELL TỐI ƯU NHẤT
+Để tạo nhanh toàn bộ cấu trúc thư mục lồng nhau chỉ bằng 01 dòng lệnh duy nhất, sử dụng lệnh sau:
+mkdir "Smart Farm Project/src/sensors/temperature"
+* Giải thích:
+  - Đặt toàn bộ đường dẫn trong dấu ngoặc kép "..." để xử lý khoảng trắng trong tên thư mục.
+  - Lệnh `mkdir` (hoặc `New-Item -ItemType Directory`) trong PowerShell có khả năng tự động khởi tạo tất cả các thư mục cha và thư mục con lồng nhau chỉ trong một lần thực thi.
